@@ -11,7 +11,7 @@ s_list * InitGraphElement(void)
 }
 
 //!Add new element in general queue
-//!Parameters: pointer to the next available element in queue
+//!Parameters: pointer to the next available element in queue and the number of vertex
 //!Return: address of the created element
 s_list * AddNewQueueElement(s_list ** pList, int vertex)
 {
@@ -26,11 +26,11 @@ s_list * AddNewQueueElement(s_list ** pList, int vertex)
 }
 
 //!Update sublist of connected vertices for element in queue
-//!Parameters: pointer to the next element in sublist, value of the vertex and edge
+//!Parameters: pointer to the next element in sublist, its number in the queue, value of the vertex and edge
 //!Return: pointer to the previous element in sublist
 s_list * UpdateElement(s_list **pSubList, int index, int vertex, int edge)
 {
-    if(index != 0)
+    if(index != 0)                      //!At first go through the list to the specified element
     {
         (*pSubList)->next = UpdateElement(&((*pSubList)->next), index-1, vertex, edge);      //!Switch to the next element in queue
     }else if((*pSubList) == NULL)                            //!If there isn't elements - create new one and init data
@@ -41,7 +41,7 @@ s_list * UpdateElement(s_list **pSubList, int index, int vertex, int edge)
         (*pSubList)->data.vertex = vertex;
         (*pSubList)->data.weight = edge;
         return *pSubList;
-    }else
+    }else                                               //!Then find the end of the sublist and update it
     {
         (*pSubList)->sublist = UpdateElement(&((*pSubList)->sublist), 0, vertex, edge);      //!Switch to the sublist element in queue
         if((*pSubList)->sublist == NULL)
@@ -51,19 +51,20 @@ s_list * UpdateElement(s_list **pSubList, int index, int vertex, int edge)
 }
 
 //!Print all available vertices in queue and sublists
-//!Parameters: pointer to the queue and a current vertex
-void PrintList(s_list ** pList, int index)
+//!Parameters: pointer to the queue
+void PrintList(s_list ** pList)
 {
     if( (*pList) == NULL)
         return;
-    printf("%d => %d(%d)", index, (*pList)->data.vertex+1, (*pList)->data.weight);        //!Print data for current element
-    PrintSubList((*pList)->sublist);                                                            //!Print sublist
+    //!Print data for current element
+    printf("%d => %d(%d)", (*pList)->data.vertex+1, (*pList)->data.vertex+1, (*pList)->data.weight);
+    PrintSubList((*pList)->sublist);              //!Print sublist
     printf("\n");
-    PrintList(&(*pList)->next, index +1);                   //!Switch to the next element
+    PrintList(&(*pList)->next);                   //!Switch to the next element
 }
 
 //!Print sublist for current vertix
-//!Parameters: pointer to the element of the sublist
+//!Parameters: const pointer to the element of the sublist
 void PrintSubList(const s_list* sublist)
 {
     if(sublist == NULL)
@@ -76,18 +77,39 @@ void PrintSubList(const s_list* sublist)
 //!Parameters: pointer to the start of the queue
 void FreeGraphMemory(s_list **pList)
 {
-    if(pList == NULL)
+    if(*pList == NULL)
         return;
     FreeGraphMemory(&(*pList)->next);
     FreeSubList(&(*pList)->sublist);                        //!Delete sublist for current element
     free((*pList));                                         //!Delete element from queue
 }
 
+//!Delete one vertex by number
+//!Parameters: pointer to the queue and the number of vertex
+void DeleteVertix(s_list **pList, int index)
+{
+    if(*pList == NULL)
+    {
+        printf("Current vertex is not exist\n");
+        return;
+    }
+    if(index > 1)
+        DeleteVertix(&(*pList)->next, index-1);
+    else
+    {
+        static s_list *delete;
+        delete = (*pList)->next;                    //!Cut element from queue
+        (*pList)->next = (*pList)->next->next;      //!Change the order of the queue
+        delete->next = NULL;
+        FreeGraphMemory(&delete);                   //!Delete the selected element
+    }
+
+}
 //!Free dynamic memory for sublist
 //!Parameters: pointer to the sublist
 void FreeSubList(s_list **sublist)
 {
-    if(sublist == NULL)
+    if(*sublist == NULL)
         return;
     FreeSubList(&(*sublist)->sublist);
     free((*sublist));

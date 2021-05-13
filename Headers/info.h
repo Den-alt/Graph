@@ -13,14 +13,16 @@ typedef struct LIST{
 }s_list;
 
 //!readinfo.c
-int ReadConsoleData(s_list **);
+s_list * ReadConsoleData(s_list **);
+s_list * ReadFileData(s_list**);
 
 //!graph.c
 s_list * InitGraphElement(void);
 s_list * AddNewQueueElement(s_list **, int);
 s_list * UpdateElement(s_list **, int, int, int);
-void PrintList(s_list **, int);
+void PrintList(s_list **);
 void PrintSubList(const s_list*);
+void DeleteVertix(s_list **, int);
 void FreeGraphMemory(s_list **);
 void FreeSubList(s_list **);
 
