@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 #include "Headers/info.h"
 
 int main()
@@ -47,10 +48,17 @@ int main()
     }
     printf("Your adjacency list:\n");
     PrintList(VertexList);                                                 //!Print current adjacency list
+    if(CheckCondition(VertexList) != 0)                                     //!Check the Dirac's Theorem
+    {
+        printf("Condition false\n");
+        FreeListMemory(&VertexList);
+        return -1;
+    }
     printf("Enter the pivot vertex: \n");                            //!Get value of the pivot vertex to find a Hamilton cycles
     scanf("%d", &pivot);
     TSP.vertex = pivot-1;
     TSP.min = 0;
+    clock_t start = clock();
     TSP.size = CalcVertices(VertexList);
     if( (TSP.cycle = InitCycle(TSP.size)) == NULL )
     {
@@ -64,6 +72,9 @@ int main()
         printf(" %d", TSP.cycle[i]+1);
     printf("\n");
     FreeListMemory(&VertexList);
+    ClearGraph(&TSP);
+    clock_t end = clock();
+    printf("Time: %lf seconds\n", (double)(end - start) / CLOCKS_PER_SEC);
     getchar();
     return 0;
 }

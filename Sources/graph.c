@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../Headers/info.h"
+#define DIRAC 2
 
 //!Initialize graph list element(type: struct) in dynamic memory
 //!Return: pointer to current struct
@@ -65,6 +66,36 @@ int * InitCycle(int size)
 {
     int * array = (int*)malloc(size*sizeof(int));
     return array;
+}
+//!Free memory for cycle
+void ClearGraph(s_hamilton * graph)
+{
+    free(graph->cycle);
+}
+//!Check Dirac's Theorem
+//!Parameters: pointer to the adjacency list
+//!Return: 0 if true and -1 if false
+int CheckCondition(s_list *list)
+{
+    if(list == NULL)
+        return 0;
+    if(CheckDiracTheorem(list->sublist, DIRAC) != 0)            //!Check condition in sublist
+        return -1;
+    else
+        return CheckCondition(list->next);
+}
+
+//!Prove Dirac's Theorem for current sublist
+//!Parameters: pointer to the adjacency list and index
+//!Return: 0 if true and -1 if false
+int CheckDiracTheorem(s_list* sublist, int index)
+{
+    if(index == 0)
+        return 0;
+    if(sublist == NULL)
+        return -1;
+    else
+        return CheckDiracTheorem(sublist->sublist, index - 1);
 }
 //!Find vertex in general queue by value
 //!Parameters: next element in the list and a value of the vertex

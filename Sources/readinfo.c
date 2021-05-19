@@ -25,7 +25,7 @@ s_list * ReadConsoleData(s_list ** pList)
                 return NULL;
             }
             pList = &isNull;
-            PrintList(pList);
+            PrintList(*pList);
         }else if(isVertex == 1)                                  //!Firstly save value of vertex
         {
             isVertex = !isVertex;
