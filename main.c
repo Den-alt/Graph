@@ -4,7 +4,8 @@
 int main()
 {
     s_list *VertexList = NULL;             //!Dynamic queue of the first elements of the adjacency lists
-    int input = 1;
+    s_hamilton TSP;                        //!Result of calculation
+    int input = 1, pivot = 0;
     //!Get data
     printf("Enter the number of the input mode:\nConsole - 1\nFile - 2\nEnter: ");
     scanf("%d", &input);
@@ -17,8 +18,10 @@ int main()
         } else
         {
             printf("Error! Failed to read data!\n");
+            return -1;
         }
-    }else if(input == 2)
+    }
+    else if(input == 2)
     {
         printf("You choose to enter the data from file\n");
         if((VertexList = ReadFileData(&VertexList)) != NULL)
@@ -27,6 +30,7 @@ int main()
         } else
         {
             printf("Error! Failed to read data!\n");
+            return -1;
         }
     }
     else
@@ -38,10 +42,28 @@ int main()
         } else
         {
             printf("Error! Failed to read data!\n");
+            return -1;
         }
     }
     printf("Your adjacency list:\n");
-    PrintList(&VertexList);                      //!Print current adjacency list
-    FreeGraphMemory(&VertexList);
+    PrintList(VertexList);                                                 //!Print current adjacency list
+    printf("Enter the pivot vertex: \n");                            //!Get value of the pivot vertex to find a Hamilton cycles
+    scanf("%d", &pivot);
+    TSP.vertex = pivot-1;
+    TSP.min = 0;
+    TSP.size = CalcVertices(VertexList);
+    if( (TSP.cycle = InitCycle(TSP.size)) == NULL )
+    {
+        printf("Program failed\nNot enough memory\n");
+        FreeListMemory(&VertexList);
+        return -1;
+    }
+    SearchHamiltonian(&TSP, VertexList, 1);
+    printf("The result = %d: vertices =>", TSP.min);
+    for (int i = 0; i < TSP.size; ++i)
+        printf(" %d", TSP.cycle[i]+1);
+    printf("\n");
+    FreeListMemory(&VertexList);
+    getchar();
     return 0;
 }

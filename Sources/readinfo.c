@@ -21,7 +21,7 @@ s_list * ReadConsoleData(s_list ** pList)
             isNull = AddNewQueueElement(pList, 0);                   //!Switch(create) to the sublist
             if(isNull == NULL)                                      //!If sublist hasn't been created
             {
-                FreeGraphMemory(pList);
+                FreeListMemory(pList);
                 return NULL;
             }
             pList = &isNull;
@@ -38,7 +38,7 @@ s_list * ReadConsoleData(s_list ** pList)
             isNull = UpdateElement(pList, index-1, vertex-1, edge);              //!Set data in adjacency list
             if(isNull == NULL)                                         //!If new element in sublist can't be added
             {
-                FreeGraphMemory(pList);
+                FreeListMemory(pList);
                 return NULL;
             }
             pList = &isNull;
@@ -73,7 +73,7 @@ s_list * ReadFileData(s_list** pList)
             isNull = AddNewQueueElement(pList, 0);                   //!Switch(create) to the sublist
             if(isNull == NULL)                                      //!If sublist hasn't been created
             {
-                FreeGraphMemory(pList);
+                FreeListMemory(pList);
                 return NULL;
             }
             pList = &isNull;
@@ -85,11 +85,10 @@ s_list * ReadFileData(s_list** pList)
         {
             isVertex = !isVertex;
             edge = value;
-            printf("Creating new element of sublist\n");
             isNull = UpdateElement(pList, index-1, vertex-1, edge);              //!Set data in adjacency list
             if(isNull == NULL)                                         //!If new element in sublist can't be added
             {
-                FreeGraphMemory(pList);
+                FreeListMemory(pList);
                 return NULL;
             }
             pList = &isNull;
@@ -100,7 +99,6 @@ s_list * ReadFileData(s_list** pList)
             symbol = fgetc(UserFile);
             if(feof(UserFile))
             {
-                DeleteVertix(pList, index-1);       //!Delete extra vertix
                 fclose(UserFile);                   //!Close file stream
                 return *pList;
             }
