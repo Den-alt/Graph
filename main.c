@@ -55,6 +55,8 @@ int main()
         return -1;
     }
     printf("Enter the pivot vertex: \n");                            //!Get value of the pivot vertex to find a Hamilton cycles
+    if(input == 1)                                                          //!To avoid reading an enter symbol if read data from console
+        getchar();
     scanf("%d", &pivot);
     TSP.vertex = pivot-1;
     TSP.min = 0;
@@ -67,10 +69,16 @@ int main()
         return -1;
     }
     SearchHamiltonian(&TSP, VertexList, 1);
-    printf("The result = %d: vertices =>", TSP.min);
-    for (int i = 0; i < TSP.size; ++i)
-        printf(" %d", TSP.cycle[i]+1);
-    printf("\n");
+    if(TSP.min == 0)
+        printf("Hamiltonian cycles don't exist\nTravelling Salesman Problem can't be solved\n");
+    else
+    {
+        printf("The result = %d: vertices =>", TSP.min);
+        for (int i = 0; i < TSP.size; ++i)
+            printf(" %d", TSP.cycle[i]+1);
+        printf("\n");
+
+    }
     FreeListMemory(&VertexList);
     ClearGraph(&TSP);
     clock_t end = clock();

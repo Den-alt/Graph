@@ -84,7 +84,6 @@ int CheckCondition(s_list *list)
     else
         return CheckCondition(list->next);
 }
-
 //!Prove Dirac's Theorem for current sublist
 //!Parameters: pointer to the adjacency list and index
 //!Return: 0 if true and -1 if false
